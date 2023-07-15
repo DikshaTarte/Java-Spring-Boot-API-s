@@ -1,0 +1,115 @@
+
+	   // Read operation
+	    @GetMapping("/hello")
+	    public String Hello() {
+	    	  return "Hello World";
+	    }
+	    
+	    @GetMapping(value ="/testhello")
+	    private String gettestHello() {
+	    	  String uri = "http://localhost:8080/hello";
+		      RestTemplate restTemplate = new RestTemplate();
+		      String result = restTemplate.getForObject(uri, String.class);
+	    	  return result;
+	    }
+	    
+	    @GetMapping(value ="/all")
+	    private String getExternalAPString() {
+	        String resourceUrl = "https://jsonplaceholder.typicode.com/posts";
+	    	  RestTemplate restTemplate = new RestTemplate();
+	    	  ResponseEntity<String> response = restTemplate.getForEntity(resourceUrl, String.class);
+	    	  String getApi = response.getBody();
+	        System.out.println(getApi);
+			    return getApi;
+	  	    }
+	    
+	    @GetMapping(value ="/getbyid/{id}")
+	    private String findbyid(@PathVariable int id) {
+	    	  String resourceUrl = "https://jsonplaceholder.typicode.com/posts/" +id;
+	    	  RestTemplate restTemplate = new RestTemplate();
+	    	  ResponseEntity<String> response = restTemplate.getForEntity(resourceUrl, String.class);
+	    	  String getApi = response.getBody();
+	    	  System.out.println(getApi);
+			    return getApi;
+	  	    }
+	    
+	    @GetMapping(value ="/postcomments/{id}")
+	    private String findbycommentId(@PathVariable int id) {
+	    	  String resourceUrl = "https://jsonplaceholder.typicode.com/posts/" +id+"/comments";
+	    	  RestTemplate restTemplate = new RestTemplate();
+	    	  ResponseEntity<String> response = restTemplate.getForEntity(resourceUrl, String.class);
+	    	  String getApi = response.getBody();
+	    	  System.out.println(getApi);
+			    return getApi;
+	  	    }
+
+
+
+
+
+
+
+
+
+
+    // Save operation
+    Attributes save(Object object);
+  
+    // Read operation
+    List<Attributes> fetchAttributesList();
+        
+//find by id
+	Optional<Attributes> findById(Integer id);
+
+	void getDataFromAPI();
+
+	//find by userId
+		Optional<Attributes> findByuserId(Integer userId);
+
+		void getDataFromuserAPI() throws RestClientException;
+ 
+    //Asset updateAsset(Asset asset,Integer id);
+  
+    // Delete operation
+   // void deleteAssetById(Integer id);
+
+
+
+
+
+
+
+	@Override
+	public List<Attributes> fetchAttributesList() {
+		return (List<Attributes>)tpaRepo.findAll();
+	}
+    @Override
+    public Optional<Attributes> findById(Integer id) {
+        return tpaRepo.findById(id);
+    }
+    public Optional<Attributes> findByuserId(Integer userId) {
+        return tpaRepo.findById(userId);
+    }
+      @PostMapping("/placeOrder")
+    public Attributes placeOrder(@RequestBody AssetRequest request){
+        return  tpaRepo.saveAll(request.getAttributes());
+    } 
+    @Override
+    public void getDataFromAPI() throws RestClientException {
+           ResponseEntity<List<Attributes>> response = new ResponseEntity<List<Attributes>>(null);
+            List<Attributes> result = response.getBody();
+                // Save the list into a database
+       if(Objects.nonNull(result)) result.stream().filter(Objects::nonNull).forEach(element -> tpaRepo.saveAndFlush(element));
+    }
+    @Override
+    public void getDataFromuserAPI() throws  RestClientException {
+           ResponseEntity<List<Attributes>> response = new ResponseEntity<List<Attributes>>(null);
+      List<Attributes> result = response.getBody();
+                         // Save the list into a database
+       if(Objects.nonNull(result)) result.stream().filter(Objects::nonNull).forEach(element -> tpaRepo.saveAndFlush(element));
+}
+	@Override
+	public Attributes save(Object object) {
+		// TODO Auto-generated method stub
+		return null;
+	}
